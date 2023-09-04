@@ -1,0 +1,13 @@
+.App{
+    display: flex;
+    gap: 50px;
+}
+.scheduler_box{
+    width: 60%;
+    border: solid 2px red;
+}
+.side_bar{
+    height: 80vh;
+    width: 200px;
+    border: solid 2px rgb(14, 0, 136);
+}

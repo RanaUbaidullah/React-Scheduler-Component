@@ -2,20 +2,12 @@ import React, { useState } from "react";
 import { TextField, Button, DialogActions } from "@mui/material";
 import { Scheduler } from "@aldabil/react-scheduler";
 import type { SchedulerHelpers } from "@aldabil/react-scheduler/types";
-
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import Box from '@mui/material/Box';
-
-
-import { EVENTS } from "./events";
-
-
-
-
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -26,25 +18,13 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
 
   // console.log(scheduler.state.start.value)
 
-
-
-  
-
   const [startvalue, setStartvalue] = useState(dayjs(scheduler.state.start.value));
   const [endvalue, setEndvalue] = useState(dayjs(scheduler.state.end.value));
 
-
-
-
-
-
-  // Make your own form/state
   const [state, setState] = useState({
     title: event?.title || "",
     description: event?.description || "",
   });
-
-
 
   const handleChange = (value: string, name: string) => {
     setState((prev) => {
@@ -149,7 +129,6 @@ const CustomEditor = ({ scheduler }: CustomEditorProps) => {
     </div>
   );
 };
-
 function App() {
   return (
     <>
@@ -176,35 +155,6 @@ function App() {
             </div>
           );
         }}
-      />
-      <Scheduler
-        events={EVENTS}
-        view="week"
-        day={null}
-        today={null}
-        month={{
-          weekDays: [0, 1, 2, 3, 4, 5],
-          weekStartOn: 6,
-          startHour: 9,
-          endHour: 17,
-          navigation: true,
-          disableGoToDay: false
-        }}
-        week={null}
-
-
-        fields={[
-          {
-            name: "Description",
-            type: "input",
-            config: { label: "Details", }
-          },
-          {
-            name: "description",
-            type: "input",
-            config: { label: "Description", required: true, number: true, variant: "outlined", }
-          }
-        ]}
       />
     </>
   );

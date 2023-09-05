@@ -1,4 +1,4 @@
-import React ,{ useState } from "react";
+import React, { useState } from "react";
 import { TextField, Button, DialogActions } from "@mui/material";
 import { Scheduler } from "@aldabil/react-scheduler";
 import type { SchedulerHelpers } from "@aldabil/react-scheduler/types";
@@ -8,69 +8,68 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import Box from '@mui/material/Box';
+
+
+import { EVENTS } from "./events";
+
+
 
 
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
 }
-const CustomEditor = ({ scheduler }: CustomEditorProps) => {
 
+const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const event = scheduler.edited;
 
-  const today = new Date();
+  // console.log(scheduler.state.start.value)
 
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1; // January is 0, so we need to add 1
-  const day = today.getDate();
+
+
   
-  const currentDate = `${year}-${month}-${day}`;
+
+  const [startvalue, setStartvalue] = useState(dayjs(scheduler.state.start.value));
+  const [endvalue, setEndvalue] = useState(dayjs(scheduler.state.end.value));
 
 
 
 
 
-
-const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-
-const tomorrowyear = tomorrow.getFullYear();
-const tomorrowmonth = tomorrow.getMonth() + 1; // January is 0, so we need to add 1
-const tomorrowday = tomorrow.getDate();
-
-const tomorrowDate = `${tomorrowyear}-${tomorrowmonth}-${tomorrowday}`;
-
-
-
-
-
-
-
-  const [startvalue, setStartvalue] = React.useState(dayjs(currentDate));
-  const [endvalue, setEndvalue] = React.useState(dayjs(tomorrowDate));
 
   // Make your own form/state
   const [state, setState] = useState({
     title: event?.title || "",
     description: event?.description || "",
-    start: "",
-    end: ""
   });
-  const [error, setError] = useState("");
+
+
 
   const handleChange = (value: string, name: string) => {
     setState((prev) => {
       return {
         ...prev,
+
         [name]: value
       };
     });
   };
-  const handleSubmit = async () => {
-    // Your own validation
-    if (state.title == 0) {
-      return setError("Min value is 1");
-    }
 
+  const handlestartdate= (startfdate)=> {
+    console.log(startfdate)
+    
+    setStartvalue(startfdate)
+    console.log(startvalue)
+
+  }
+  const handleenddate= (endfdate)=> {
+    console.log(endfdate)
+    setEndvalue(endfdate)
+    console.log(endvalue)
+  }
+
+  const handleSubmit = async () => {
     try {
       scheduler.loading(true);
 
@@ -83,13 +82,15 @@ const tomorrowDate = `${tomorrowyear}-${tomorrowmonth}-${tomorrowday}`;
          * start: Date|string
          * end: Date|string
          */
+        console.log(startvalue)
+        console.log(endvalue)
         setTimeout(() => {
           res({
             event_id: event?.event_id || Math.random(),
             title: state.title,
             start: startvalue,
             end: endvalue,
-            description: state.description
+            description: state.description,
           });
         }, 3000);
       }))
@@ -104,31 +105,42 @@ const tomorrowDate = `${tomorrowyear}-${tomorrowmonth}-${tomorrowday}`;
     <div>
       <div style={{ padding: "1rem" }}>
         <p>Load your custom form/fields</p>
-        <TextField
-          label="Hotel Price"
-          value={state.title}
-          type="number"
-          onChange={(e) => handleChange(e.target.value, "title")}
-          error={!!error}
-          helperText={error}
-          fullWidth
-        />
-        <TextField
-          type="number"
-          label="Flight Price"
-          value={state.description}
-          onChange={(e) => handleChange(e.target.value, "description")}
-          fullWidth
-        />
+        <Box
+          component="form"
+          sx={{
+            '& .MuiTextField-root': { m: 0.5, width: '34ch' },
+          }}
+          autoComplete="off"
+        >
+          <div>
+            <TextField
+              label="Hotel Price"
+              value={state.title}
+              type="number"
+              onChange={(e) => handleChange(e.target.value, "title")}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+            />
+            <TextField
+              label="Flight Price"
+              value={state.description}
+              onChange={(e) => handleChange(e.target.value, "description")}
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </div>
+        </Box>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
-            <DatePicker label="Start" value={startvalue} onChange={(newValue) => setStartvalue(newValue)}/>
-            <DatePicker label="End" value={endvalue} onChange={(newValue) => setEndvalue(newValue)}/>
+            <DatePicker label="Start" value={startvalue} onChange={(newValue) =>handlestartdate(newValue.$d)} />
+            <DatePicker label="End" value={endvalue} onChange={(newValue) => handleenddate(newValue.$d)} />
           </DemoContainer>
         </LocalizationProvider>
-
-
       </div>
       <DialogActions>
         <Button onClick={scheduler.close}>Cancel</Button>
@@ -140,17 +152,61 @@ const tomorrowDate = `${tomorrowyear}-${tomorrowmonth}-${tomorrowday}`;
 
 function App() {
   return (
-    <Scheduler
-      customEditor={(scheduler) => <CustomEditor scheduler={scheduler} />}
-      viewerExtraComponent={(fields, event) => {
-        return (
-          <div>
-            <p>Useful to render custom fields...</p>
-            <p>Description: {event.description || "Nothing..."}</p>
-          </div>
-        );
-      }}
-    />
+    <>
+      <Scheduler
+        customEditor={(scheduler) => <CustomEditor scheduler={scheduler}
+        />}
+        view="mounth"
+        day={null}
+        today={null}
+        month={{
+          weekDays: [0, 1, 2, 3, 4, 5],
+          weekStartOn: 6,
+          startHour: 9,
+          endHour: 17,
+          navigation: true,
+          disableGoToDay: false
+        }}
+        week={null}
+        viewerExtraComponent={(fields, event) => {
+          return (
+            <div>
+              <p>Useful to render custom fields...</p>
+              <p>Description: {event.description || "Nothing..."}</p>
+            </div>
+          );
+        }}
+      />
+      <Scheduler
+        events={EVENTS}
+        view="week"
+        day={null}
+        today={null}
+        month={{
+          weekDays: [0, 1, 2, 3, 4, 5],
+          weekStartOn: 6,
+          startHour: 9,
+          endHour: 17,
+          navigation: true,
+          disableGoToDay: false
+        }}
+        week={null}
+
+
+        fields={[
+          {
+            name: "Description",
+            type: "input",
+            config: { label: "Details", }
+          },
+          {
+            name: "description",
+            type: "input",
+            config: { label: "Description", required: true, number: true, variant: "outlined", }
+          }
+        ]}
+      />
+    </>
   );
 }
 

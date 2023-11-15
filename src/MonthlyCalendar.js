@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './MonthlyCalendar.css';
 
 const MonthlyCalendar = () => {
@@ -9,10 +9,13 @@ const MonthlyCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [displayedDate, setDisplayedDate] = useState('');
 
-  const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ];
+  const months = useMemo(
+    () => [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ],
+    [] // Empty dependency array to ensure the months array is created only once
+  );
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   useEffect(() => {
     setCurrentDate(new Date());
@@ -25,7 +28,7 @@ const MonthlyCalendar = () => {
       const selectedDay = selectedDate.getDate();
       setDisplayedDate(`${selectedYear}, ${selectedMonth}, ${selectedDay}`);
     }
-  }, [selectedDate]);
+  }, [selectedDate, months]); // Include 'months' as a dependency
 
   useEffect(() => {
     // Load events from local storage on component mount

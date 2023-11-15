@@ -16,8 +16,8 @@ const MonthlyCalendar = () => {
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   useEffect(() => {
     setCurrentDate(new Date());
-  }, []);
-
+  }, []); 
+ 
   useEffect(() => {
     if (selectedDate) {
       const selectedYear = selectedDate.getFullYear();

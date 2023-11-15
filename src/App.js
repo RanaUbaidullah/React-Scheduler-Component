@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import MonthlyCalendar from "./MonthlyCalendar";
 import "./App.css"
 // import { TextField, Button, DialogActions } from "@mui/material";
@@ -135,7 +135,7 @@ function App() {
   return (
     <>
     <div className="Heading">
-    <img height="60px" src="calendar.png" ></img>
+    <img height="60px" src="calendar.png"  alt="calendar"></img>
     <h1>Calendar</h1>
     </div>
     <MonthlyCalendar/>
